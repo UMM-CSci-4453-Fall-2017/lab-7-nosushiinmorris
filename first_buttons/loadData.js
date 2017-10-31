@@ -1,4 +1,9 @@
-var credentials = require('../Shawn/credentials.json');
+var myArgs = process.argv.slice(2);
+
+var db = myArgs[0];
+var credLocation = myArgs[1];
+
+var credentials = require(credLocation);
 
 var mysql=require("mysql");
 
@@ -6,10 +11,11 @@ credentials.host="ids";
 
 var connection = mysql.createConnection(credentials);
 
-useDB();
+useDB(db);
 
-function useDB() {
-    connection.query("USE globbimus;", function(err) {
+function useDB(db) {
+    str = "USE " + db + ";"
+    connection.query(str , function(err) {
         if (err) {
             console.log("Problems with MySQL: "+err);
             connection.end();
