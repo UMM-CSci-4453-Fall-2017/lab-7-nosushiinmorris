@@ -25,7 +25,7 @@ var query=function(command){ //SQL comes in and a promise comes out.
 };
 
 var endPool=function(){
-    console.log("End Connection to DBS");
+    console.log("End Connection to DB");
     pool.end(function(err){});
 }
 
