@@ -29,8 +29,8 @@ var endPool=function(){
     pool.end(function(err){});
 }
 
-var useDB = function(){
-    var sql  = "use Dogxx000;";
+var useDB = function(db){
+    var sql  = "use "+db+";";
     return query(mysql.format(sql));
 }
 
@@ -39,8 +39,8 @@ var selectButtonRecord = function(){
     return query(mysql.format(sql));
 }
 
-var receivedRecords = function() {
-    return receiveRecords = useDB()
+var receivedRecords = function(db) {
+    return receiveRecords = useDB(db)
     .then(selectButtonRecord)
 }
 
