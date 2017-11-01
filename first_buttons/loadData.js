@@ -1,9 +1,8 @@
 var myArgs = process.argv.slice(2);
 
 var db = myArgs[0];
-var credLocation = myArgs[1];
 
-var credentials = require(credLocation);
+var credentials = require('../credentials.json');
 
 var mysql=require("mysql");
 
@@ -14,7 +13,7 @@ var connection = mysql.createConnection(credentials);
 useDB(db);
 
 function useDB(db) {
-    str = "USE " + db + ";"
+    str = "USE " + db + ";";
     connection.query(str , function(err) {
         if (err) {
             console.log("Problems with MySQL: "+err);
@@ -54,7 +53,7 @@ function truncate() {
 }
 
 function loadDB() {
-    connection.query("LOAD DATA LOCAL INFILE '../resources/data.txt' INTO TABLE till_buttons;", function(err){
+    connection.query("LOAD DATA LOCAL INFILE 'resources/data.txt' INTO TABLE till_buttons;", function(err){
         if(err) {
             console.log("Problems with MySQL: "+err);
             connection.end();
