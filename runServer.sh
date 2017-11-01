@@ -1,6 +1,7 @@
 #!/bin/bash
 
 db=$1
-credentials=$2
 
-node loadData.js db credentials
+node first_buttons/loadData.js $db
+
+node first_buttons/lab7server.js $db
