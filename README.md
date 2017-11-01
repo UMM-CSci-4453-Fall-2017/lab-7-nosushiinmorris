@@ -1,5 +1,20 @@
 # Lab 7
 
+## Running Server   
+To run the server, run the `runServer.sh`. This script takes in one argument, database name, which is the database you would like to use on MariaDB. This script assumes that the location of your credentials (to log onto the database), is named `credentials.json` and is located in `lab-7-nosushiinmorris`. The script will also assume that there will be a directory `lab-7-nosushiinmorris/resources/` that contains a file `data.txt` which will contain a tab separated list of the buttons.
+The format of `data.txt` will be the following fields in order.   
+
+| Field    | Type    | Null | Key | Default | Extra |
+|----------|---------|------|-----|---------|------:|
+| buttonID | int(11) | NO   | PRI | NULL    |       |
+| left     | int(11) | YES  |     | NULL    |       |
+| top      | int(11) | YES  |     | NULL    |       |
+| width    | int(11) | YES  |     | NULL    |       |
+| label    | text    | YES  |     | NULL    |       |
+| invID    | int(11) | YES  |     | NULL    |      ||
+
+`runServer` will call a script, `loadData.js` that will load `data.txt` into the given database, retrieve the records, using the script `getButtons.js` from the populated database to start the server, which is called from the script, `lab7server.js`.
+
 ## Table of Contents
 - [Asynchronous node](#asynchronous-node)
   - [Approach One: Coordinate using a data structure](#approach-one--coordinate-using-a-data-structure)
@@ -48,7 +63,7 @@ We begin the program similarly to what we did in the last lab by setting up the 
 
 Our logic is particularly simple-- if there is an error, report it and close the connection.  Otherwise our query has returned an array of objects which we will deal with in the function `processDBFs` (discussed below).
 
-Let's look at how `processDBFs` works: 
+Let's look at how `processDBFs` works:
 
 ```{js}
 function processDBFs(dbfs){ // Asynchronous row handler
@@ -502,9 +517,9 @@ var processTables=function(results){ //Returns a promise that forces ALL table d
   return(allTables);
 }
 
-//Takes an object (as returned by showDatabases) and returns a promise that resolves 
+//Takes an object (as returned by showDatabases) and returns a promise that resolves
 // to an array of objects containing table names for the dbf in dbfObj
-var dbfToPromise=function(dbfObj){ 
+var dbfToPromise=function(dbfObj){
   var dbf=dbfObj.Database
   var sql = mysql.format("SHOW TABLES IN ??",dbf);
   var queryPromise=DBF.query(sql)
@@ -512,7 +527,7 @@ var dbfToPromise=function(dbfObj){
   return(queryPromise);
 }
 
-//Takes an object (as returned by showDatabases) and returns a promise that resolves 
+//Takes an object (as returned by showDatabases) and returns a promise that resolves
 // to an array of objects containing table descriptions.  
 // This function creates helper functions:
 //     describeTable()
@@ -595,9 +610,9 @@ app.use(express.static(__dirname + '/public'));
 app.listen(port);
 ```
 
-The web-server is expecting our HTML files to be in the `public` sub directory.  Go ahead and 
+The web-server is expecting our HTML files to be in the `public` sub directory.  Go ahead and
 
-* type the code above into a file named app.js 
+* type the code above into a file named app.js
 * create a `public` subdirectory
 * add a simple `index.html` file in `public`
 
@@ -609,7 +624,7 @@ node app.js
 
 (typing that command will run your server and start it on port 1337.  It will keep running until you type ctl-C
 
-You should be able to see it in action by starting up a browser and typing 
+You should be able to see it in action by starting up a browser and typing
 
 ```{js}
 http://localhost:1337
@@ -622,7 +637,7 @@ Please note that if you are working on a lab computer **from home** that `http:/
 Use the `public` sub-directory that was cloned with your repository for the following tutorial:
 <http://www.revillweb.com/tutorials/angularjs-in-30-minutes-angularjs-tutorial/>.
 
-Everything is case-sensitive so pay close attention.  Do not be afraid to open the browser's console to help with debugging.  I recommend using the same version of angularJS that the author used to develop the tutorial:  I checked that the tutorial still works (Fall 2017) when using the following line in `index.html`: 
+Everything is case-sensitive so pay close attention.  Do not be afraid to open the browser's console to help with debugging.  I recommend using the same version of angularJS that the author used to develop the tutorial:  I checked that the tutorial still works (Fall 2017) when using the following line in `index.html`:
 
 `<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js" type="text/javascript"></script>`
 
@@ -660,7 +675,7 @@ Let's expand our web server so it does two things:
 * Provide files from the 'public' directory
 * Generates a web-page asking the user if they would like some buttons
 
-The default behavior will be to provide files, however if the requested URL look like '/buttons' then we will politely ask the user if they would like *some buttons*. 
+The default behavior will be to provide files, however if the requested URL look like '/buttons' then we will politely ask the user if they would like *some buttons*.
 
 Here's the basic setup:
 
@@ -695,7 +710,7 @@ Notice that each button in the web page has an HTML code chunk that looks a bit 
 <div style="position:absolute;left:320px;top:100px"><button id="1" >food</button></div>
 ```
 
-In the example below I've replaced explicit values with expressions of the form '#stuff#' 
+In the example below I've replaced explicit values with expressions of the form '#stuff#'
 
 ```
 <div style="position:absolute;left:#LEFT#px;top:#TOP#px"><button id="#BUTTON_ID#" >#LABEL#</button></div>
@@ -724,7 +739,7 @@ Be sure to push the appropriate files to your group's repository.
     - [ ] `_name_.show-databases.js` from [back to databases](#back-to-databases)
     - [ ] `_name_.dbf-setups.js` from [making things a big cleaner(#making-things-a-bit-cleaner)
     - [ ] `_name_.dbf-summarize-db-promises.js` from [making things a big cleaner(#making-things-a-bit-cleaner)
- - [ ] As a group 
+ - [ ] As a group
     - [ ] [Angular JS tutorial](http://www.revillweb.com/tutorials/angularjs-in-30-minutes-angularjs-tutorial/)
       - [ ] `express.js` in root directory of project/repository
       - [ ] `public/index.html`
