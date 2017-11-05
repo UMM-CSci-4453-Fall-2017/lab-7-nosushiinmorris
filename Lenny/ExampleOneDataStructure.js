@@ -1,0 +1,87 @@
+var credentials = require('./credentials.json');
+
+var mysql=require("mysql");
+
+credentials.host="ids";
+var connection = mysql.createConnection(credentials);
+
+var data {};
+var proccessed {};
+
+sql = 'SHOW DATABASES;';
+connection.query(sql, function(err, rows, fields) {
+    //connection.connect is run automatically for a query
+    if(err) {
+        console.log('Error looking up databases');
+        connect.end();
+    }
+    else {
+        proccessDBFs(rows);
+    }
+});
+
+function proccessDBFs(dbfs) {
+    for(var index in dbfs) {
+        var dbf = dbfs[index].Database;
+        var sql = 'SHOW TABLE IN ' + dbf;
+        data[dbf] = Number.POSITIVE_INFINITY;
+        connection.query(sql, (function(dbf) {
+            return function(err, tables, fields) {
+                if(err) {
+                    console.log('Error finding tables in dbf ' + dbf);
+                    connection.end();
+                }
+                else {
+                    processTables(tables, dbf);
+                }
+            };
+        })(dbf));
+    }
+}
+
+function processTables(tables, dbf) {
+    data[dbf] = tables.length;
+    processed[dbf] = 0;
+    for(var index in tables) {
+        var tableObj = tables[index];
+        for(key in tableObj) {
+            var table = tableObj[key];
+            table = dbf + '.' +table;
+            var sql = 'DESCRIBE ' + table;
+            connection.query(sql, (function(table, dbf){
+                if(err) {
+                    console.log('Error describing table ' + table);
+                }
+                else {
+                    processDescription(desc, table, dbf);
+                }
+            })(table, dbf));
+        }
+    }
+}
+
+function processDescription(desc, table, dbf) {
+    data[dbf]--;
+    if(processed[dbf] == 0) {
+        processed[dbf] = 1;
+        console.log('---|' + dbf + '>');
+    }
+    console.log('.....|' + dbf + '.' + table + '>');
+    desc.map(function(field) {
+        console.log("\tFieldName: `" + field.Field + "` \t("+field.Type")");
+    });
+
+    if(allZero(data)){
+        connection.end();
+    }
+}
+
+function allZero(object) {
+    allzero = true;
+    for(obj in object) {
+        if(object[obj] !=0) {
+            allzero = false;
+        }
+        return(allzero);
+    }
+}
