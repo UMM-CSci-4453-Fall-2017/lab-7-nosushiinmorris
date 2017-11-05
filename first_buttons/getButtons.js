@@ -30,12 +30,12 @@ var endPool=function(){
 }
 
 var useDB = function(db){
-    var sql  = "use "+db+";";
+    var sql  = "USE "+db+";";
     return query(mysql.format(sql));
 }
 
 var selectButtonRecord = function(){
-    var sql  = "select * from till_buttons;"
+    var sql  = "SELECT * FROM till_buttons;"
     return query(mysql.format(sql));
 }
 
